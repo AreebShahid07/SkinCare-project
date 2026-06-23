@@ -2,16 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
-import os
 from pathlib import Path
 from typing import Any
-import types
-import importlib
-import sys
 
 import numpy as np
-
-os.environ.setdefault("TF_USE_LEGACY_KERAS", "1")
 
 import tensorflow as tf
 
@@ -38,47 +32,6 @@ def _read_json(path: Path) -> dict:
         return json.load(file)
 
 
-def _register_keras_compat_modules() -> None:
-    functional_module = sys.modules.get("keras.src.models.functional")
-    if functional_module is None:
-        functional_module = types.ModuleType("keras.src.models.functional")
-        functional_module.__package__ = "keras.src.models"
-        functional_module.Functional = getattr(tf.keras.models, "Functional", tf.keras.Model)
-        functional_module.Model = tf.keras.Model
-        sys.modules["keras.src.models.functional"] = functional_module
-
-    models_module = sys.modules.get("keras.src.models")
-    if models_module is None:
-        models_module = types.ModuleType("keras.src.models")
-        models_module.__package__ = "keras.src"
-        models_module.__path__ = []
-        sys.modules["keras.src.models"] = models_module
-
-    src_module = sys.modules.get("keras.src")
-    if src_module is None:
-        src_module = types.ModuleType("keras.src")
-        src_module.__package__ = "keras"
-        src_module.__path__ = []
-        sys.modules["keras.src"] = src_module
-
-    models_module.functional = functional_module
-    src_module.models = models_module
-
-
-_register_keras_compat_modules()
-
-
-_original_import_module = importlib.import_module
-
-
-def _compat_import_module(name: str, package: str | None = None):
-    if name in sys.modules:
-        return sys.modules[name]
-    if name == "keras.src.models.functional":
-        return sys.modules[name]
-    return _original_import_module(name, package)
-
-
 def load_all() -> None:
     global state, type_model_name, cond_model_name
 
@@ -96,15 +49,8 @@ def load_all() -> None:
     cond_thresholds = [float(thresholds[c]) for c in cond_classes]
     cond_model_name = str(cond_meta.get("model", "unknown"))
 
-    # Some saved Keras archives embed internal module paths that are not
-    # importable in the deployment runtime. Patch import_module only while
-    # deserializing so Keras can resolve those legacy paths.
-    importlib.import_module = _compat_import_module
-    try:
-        type_model = tf.keras.models.load_model(config.TYPE_MODEL_PATH, compile=False)
-        cond_model = tf.keras.models.load_model(config.COND_MODEL_PATH, compile=False)
-    finally:
-        importlib.import_module = _original_import_module
+    type_model = tf.keras.models.load_model(config.TYPE_MODEL_PATH, compile=False)
+    cond_model = tf.keras.models.load_model(config.COND_MODEL_PATH, compile=False)
 
     dummy = np.zeros((1, config.IMG_SIZE[1], config.IMG_SIZE[0], 3), dtype=np.float32)
     type_model.predict(dummy, verbose=0)
