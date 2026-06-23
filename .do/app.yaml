@@ -1,0 +1,7 @@
+name: skincare-project-backend
+services:
+  - name: backend
+    source_dir: backend
+    http_port: 8080
+    build_command: sh build.sh
+    run_command: sh start.sh
