@@ -4,7 +4,7 @@ import LoadingScreen from "./components/LoadingScreen.jsx";
 import ResultsPage from "./components/ResultsPage.jsx";
 import UploadPage from "./components/UploadPage.jsx";
 
-const API_URL = "http://127.0.0.1:8000/api/v1/analyze";
+const API_URL = "https://shark-app-i925j.ondigitalocean.app/api/v1/analyze";
 const MAX_MB = 10;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const VIEW_ORDER = ["front", "left", "right"];
