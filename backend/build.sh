@@ -9,7 +9,7 @@ git lfs install
 git lfs pull
 
 # Verify models actually downloaded (not just LFS pointers)
-for f in backend/assets/skin_type_final.keras backend/assets/condition_final.keras; do
+for f in assets/skin_type_final.keras assets/condition_final.keras; do
   size=$(wc -c < "$f")
   if [ "$size" -lt 1000000 ]; then
     echo "ERROR: $f looks like an LFS pointer ($size bytes), not a real model file"
