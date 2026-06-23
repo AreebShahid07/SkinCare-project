@@ -7,6 +7,8 @@ from typing import Any
 
 import numpy as np
 import tensorflow as tf
+import sys
+import importlib
 
 import config
 
@@ -47,6 +49,24 @@ def load_all() -> None:
     thresholds = cond_meta["thresholds"]
     cond_thresholds = [float(thresholds[c]) for c in cond_classes]
     cond_model_name = str(cond_meta.get("model", "unknown"))
+
+    # Compatibility shim: some saved models reference internal module paths
+    # like 'keras.src.models.functional' which may not be importable in
+    # the runtime environment. Map those names to the installed public
+    # keras modules so deserialization can find the classes.
+    shim_map = [
+        ("keras.src.models.functional", "keras.models.functional"),
+        ("keras.src.models", "keras.models"),
+        ("keras.src.layers", "keras.layers"),
+        ("keras.src.saving", "keras.saving"),
+    ]
+    for alias, target in shim_map:
+        if alias not in sys.modules:
+            try:
+                sys.modules[alias] = importlib.import_module(target)
+            except Exception:
+                # ignore failures — load_model will raise a clearer error later
+                pass
 
     type_model = tf.keras.models.load_model(config.TYPE_MODEL_PATH, compile=False)
     cond_model = tf.keras.models.load_model(config.COND_MODEL_PATH, compile=False)
