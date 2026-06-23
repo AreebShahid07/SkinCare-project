@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
+import os
 from threading import Lock
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -28,16 +29,30 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, title="Skin Analysis API")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
+# Configure dynamic allowed origins
+origins_env = os.getenv("ALLOWED_ORIGINS", "")
+if origins_env:
+    origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+else:
+    origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
+        "https://skin-care-project-khaki.vercel.app",
+    ]
+
+# FastAPI CORSMiddleware does not allow allow_credentials=True when allow_origins contains '*'
+allow_credentials = True
+if "*" in origins:
+    allow_credentials = False
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 @app.exception_handler(Exception)
