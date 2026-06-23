@@ -1,0 +1,17 @@
+{
+  "model": "EfficientNetB0",
+  "class_indices": {
+    "Combination": 0,
+    "Dry": 1,
+    "Normal": 2,
+    "Oily": 3,
+    "Sensitive": 4
+  },
+  "img_size": [
+    224,
+    224
+  ],
+  "test_accuracy": 0.9732,
+  "macro_f1": 0.9736,
+  "mAP": 0.997
+}

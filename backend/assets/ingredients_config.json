@@ -1,0 +1,107 @@
+{
+  "exclude_tags": [
+    "Gluten Allery",
+    "May leave a white cast on darker skin",
+    "Pregnancy",
+    "Related Allergy",
+    "Vegan"
+  ],
+  "universal_good_tags": [
+    "Anyone"
+  ],
+  "condition_tag_map": {
+    "acne": [
+      "Acne",
+      "Post Blemish Marks"
+    ],
+    "blackheades": [
+      "Blackheads",
+      "Enlarged Pores"
+    ],
+    "dark spots": [
+      "Pigmentation",
+      "Post Blemish Marks",
+      "Radiance"
+    ],
+    "pores": [
+      "Enlarged Pores",
+      "Texture"
+    ],
+    "wrinkles": [
+      "Wrinkles",
+      "Fine Lines",
+      "Elasticity"
+    ]
+  },
+  "skin_type_good_tag_map": {
+    "Oily": [
+      "Oily",
+      "Enlarged Pores"
+    ],
+    "Dry": [
+      "Dry and dehydrated skin",
+      "Impaired skin barrier"
+    ],
+    "Sensitive": [
+      "Redness",
+      "Impaired skin barrier"
+    ],
+    "Combination": [
+      "Dry and dehydrated skin",
+      "Oily"
+    ],
+    "Normal": [
+      "Radiance",
+      "Fine Lines"
+    ]
+  },
+  "skin_type_avoid_tag_map": {
+    "Oily": [
+      "Oily"
+    ],
+    "Dry": [
+      "Dry Dehydrated"
+    ],
+    "Sensitive": [
+      "Sensitive",
+      "Impaired skin barrier"
+    ],
+    "Combination": [
+      "Combination"
+    ],
+    "Normal": []
+  },
+  "skin_type_descriptions": {
+    "Oily": "oily skin excess sebum shine enlarged pores oil control lightweight non-comedogenic mattifying",
+    "Dry": "dry dehydrated skin moisture barrier humectant emollient barrier repair hydration water retention",
+    "Normal": "normal balanced skin gentle maintenance hydration antioxidant protection skin health glow",
+    "Sensitive": "sensitive skin redness irritation reactivity soothing calming anti-inflammatory barrier strengthening low irritation fragrance-free",
+    "Combination": "combination skin oily t-zone dry cheeks balancing lightweight hydration gentle oil control"
+  },
+  "condition_descriptions": {
+    "acne": "acne breakouts anti-acne antibacterial sebum oil controlling anti-inflammatory blemish comedone",
+    "blackheades": "blackheads clogged pores comedone exfoliating pore clearing oil balancing keratolytic",
+    "dark spots": "dark spots hyperpigmentation brightening pigmentation reducing antioxidant post blemish marks melanin",
+    "pores": "enlarged pores uneven texture pore refining exfoliating texture smoothing tightening minimizing",
+    "wrinkles": "fine lines wrinkles elasticity anti-aging collagen firming antioxidant retinol peptide renewal"
+  },
+  "tag_weight": 0.65,
+  "nlp_weight": 0.35,
+  "nlp_promote_threshold": 0.5,
+  "default_top_n": 15,
+  "sbert_model": "all-MiniLM-L6-v2",
+  "skin_types": [
+    "Combination",
+    "Dry",
+    "Normal",
+    "Oily",
+    "Sensitive"
+  ],
+  "conditions": [
+    "acne",
+    "blackheades",
+    "dark spots",
+    "pores",
+    "wrinkles"
+  ]
+}

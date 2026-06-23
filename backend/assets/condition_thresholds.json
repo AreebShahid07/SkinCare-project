@@ -1,0 +1,23 @@
+{
+  "model": "ResNet50",
+  "classes": [
+    "acne",
+    "blackheades",
+    "dark spots",
+    "pores",
+    "wrinkles"
+  ],
+  "thresholds": {
+    "acne": 0.55,
+    "blackheades": 0.3,
+    "dark spots": 0.6,
+    "pores": 0.4,
+    "wrinkles": 0.55
+  },
+  "img_size": [
+    224,
+    224
+  ],
+  "macro_f1": 0.9716,
+  "weighted_f1": 0.971
+}
