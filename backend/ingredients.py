@@ -6,9 +6,34 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+import onnxruntime as ort
+from transformers import AutoTokenizer
 
 import config
+
+
+class LightSBERT:
+    def __init__(self, model_dir: str):
+        self.tokenizer = AutoTokenizer.from_pretrained(model_dir)
+        self.session = ort.InferenceSession(
+            f"{model_dir}/model.onnx",
+            providers=["CPUExecutionProvider"],
+        )
+
+    def encode(self, texts: list[str], normalize_embeddings=True) -> np.ndarray:
+        encoded = self.tokenizer(
+            texts, padding=True, truncation=True,
+            max_length=128, return_tensors="np"
+        )
+        input_feed = {k: v.astype(np.int64) for k, v in encoded.items()}
+        outputs = self.session.run(None, input_feed)
+        # mean pooling
+        embeddings = outputs[0].mean(axis=1)
+        if normalize_embeddings:
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            embeddings = embeddings / (norms + 1e-9)
+        return embeddings
+
 
 
 @dataclass
@@ -38,7 +63,7 @@ def load_ingredients() -> None:
     embeddings = np.load(config.INGREDIENT_EMBEDDINGS_PATH).astype(np.float32)
     df = pd.DataFrame(data)
 
-    sbert = SentenceTransformer(cfg["sbert_model"])
+    sbert = LightSBERT(str(config.ASSETS_DIR / "sbert_onnx"))
 
     ing_state = IngredientState(sbert=sbert, embeddings=embeddings, df=df, cfg=cfg)
 
@@ -78,6 +103,7 @@ def get_personalized_ingredients(
     conditions: list[str],
     top_n: int | None = None,
 ):
+    load_ingredients()
     state = get_ingredient_state()
     cfg = state.cfg
     top_n = top_n or cfg["default_top_n"]

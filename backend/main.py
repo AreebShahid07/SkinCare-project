@@ -22,7 +22,6 @@ executor = ThreadPoolExecutor(max_workers=config.PREDICT_WORKERS)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     models.load_all()
-    ingredients.load_ingredients()
     yield
     executor.shutdown(wait=False)
 
